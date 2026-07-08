@@ -203,13 +203,16 @@ ALL_KNOWN_GATES: set[str] = {
     "ccx",
     "cswap",
     "rccx",
+    "mcx",
 }
 
 #: Gates handled via decomposition rather than a single matrix.
 DECOMPOSED_GATES: set[str] = {"dcx", "rccx"}
 
 
-def gate_spec(name: str, params: list[float]) -> tuple[int, np.ndarray]:
+def gate_spec(
+    name: str, params: list[float], num_qubits: int | None = None
+) -> tuple[int, np.ndarray]:
     """Return ``(num_qubits, matrix)`` for a given gate name and numeric params.
 
     Raises:
@@ -297,6 +300,9 @@ def gate_spec(name: str, params: list[float]) -> tuple[int, np.ndarray]:
         return 3, controlled(X, 2)
     if name == "cswap":
         return 3, controlled(SWAP, 1)
+    if name == "mcx":
+        n_qubits = num_qubits if num_qubits is not None else 2
+        return n_qubits, controlled(X, n_qubits - 1)
 
     raise ValueError(f"Unsupported gate: {name}")
 

@@ -78,13 +78,9 @@ class GroverSearch(QuantumAlgorithm):
                 self.circuit.x(i)
 
     def _multi_controlled_x(self):
-
-        if self.num_qubits == 4:
-            self.circuit.ccx(0, 1, 2)
-            self.circuit.ccx(2, 3, 0)
-        else:
-            for i in range(self.num_qubits - 2):
-                self.circuit.ccx(i, i + 1, self.num_qubits - 1)
+        controls = list(range(self.num_qubits - 1))
+        target = self.num_qubits - 1
+        self.circuit.mcx(controls, target)
 
     def _diffusion(self):
 

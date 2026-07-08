@@ -44,36 +44,38 @@ class TestGroverMath(unittest.TestCase):
         self.assertAlmostEqual(prob, 1.0, places=5)
 
 
-@unittest.skipUnless(
-    os.environ.get("RUN_ALGO_CORRECTNESS") == "1",
-    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 to run.",
-)
 class TestGroverCorrectness(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        api_key = os.getenv("API_KEY")
-        if api_key:
-            from qpiai_quantum.authentication.auth import QpiAIQuantumAuth
-
-            try:
-                QpiAIQuantumAuth.login(api_key)
-            except Exception:
-                pass
-
-    def test_live_find_target_11(self):
-        import uuid
-
-        # Simplest Grover instance: 2 qubits, target "11"
-        # 1 iteration finds it deterministically
+    def test_local_find_target_11(self):
         grover = GroverSearch(num_qubits=2, target="11")
         circuit = grover.build_circuit(iterations=1)
-        circuit.name = f"grover_{uuid.uuid4().hex[:8]}"
-        result = circuit.run(shots=100)
+        result = circuit.run(device_name="QpiAI-QSV-Local", shots=100)
         counts = result.get()["counts"]
-
-        self.assertEqual(len(counts), 1)
         self.assertIn("11", counts)
         self.assertEqual(counts["11"], 100)
+
+    def test_local_find_target_111(self):
+        grover = GroverSearch(num_qubits=3, target="111")
+        circuit = grover.build_circuit(iterations=2)
+        result = circuit.run(device_name="QpiAI-QSV-Local", shots=100)
+        counts = result.get()["counts"]
+        self.assertIn("111", counts)
+        self.assertGreater(counts["111"], 50)
+
+    def test_local_find_target_1111(self):
+        grover = GroverSearch(num_qubits=4, target="1111")
+        circuit = grover.build_circuit(iterations=3)
+        result = circuit.run(device_name="QpiAI-QSV-Local", shots=100)
+        counts = result.get()["counts"]
+        self.assertIn("1111", counts)
+        self.assertGreater(counts["1111"], 50)
+
+    def test_local_find_target_11111(self):
+        grover = GroverSearch(num_qubits=5, target="11111")
+        circuit = grover.build_circuit(iterations=4)
+        result = circuit.run(device_name="QpiAI-QSV-Local", shots=100)
+        counts = result.get()["counts"]
+        self.assertIn("11111", counts)
+        self.assertGreater(counts["11111"], 50)
 
 
 if __name__ == "__main__":

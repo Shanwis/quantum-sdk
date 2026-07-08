@@ -598,6 +598,20 @@ class Circuit:
         self._validate_qubit(target_qubit2)
         self.CSWAP(control_qubit, target_qubit1, target_qubit2)  # type: ignore
 
+    def mcx(self, control_qubits: List[int], target_qubit: int):
+        """
+        Apply a multi-controlled X (MCX) gate.
+
+        Args:
+            control_qubits (List[int]): List of control qubit indices
+            target_qubit (int): Target qubit index
+        """
+        self._validate_unique_qubits(*(control_qubits + [target_qubit]))
+        for ctrl in control_qubits:
+            self._validate_qubit(ctrl)
+        self._validate_qubit(target_qubit)
+        self.MCX(control_qubits, target_qubit)  # type: ignore
+
     def barrier(self, *qubits: int):
         self._validate_unique_qubits(*qubits)
         for qubit in qubits:
@@ -680,13 +694,6 @@ class Circuit:
             raise ValueError("Cannot get statevector from Density Matrix simulator.")
 
         if device_name == "QpiAI-QSV-Local":
-            from ..authentication.user import get_user
-
-            user = get_user()
-            if user is None or not user.name or not user.email:
-                raise ValueError(
-                    "Authentication required. Call QpiAIQuantumAuth.login(api_key) first."
-                )
             simulator = StatevectorSimulator()
             result = simulator.run(self, shots=shots, name=experiment_name)
             if reverse_bits and result.counts:

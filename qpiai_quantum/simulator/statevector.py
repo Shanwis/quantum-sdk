@@ -78,7 +78,7 @@ class StatevectorSimulator(BaseSimulator):
                     _apply_gate(sub_name, sub_params, sub_qubits)
                 return
 
-            _, U = gate_spec(gate_name_lower, params)
+            _, U = gate_spec(gate_name_lower, params, num_qubits=len(qubits))
             state = self._apply_unitary(state, n_qubits, qubits, U)
 
         # Iterate directly through the circuit's evolution list
