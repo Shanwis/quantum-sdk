@@ -14,9 +14,9 @@ This repository contains the **QpiAI Quantum SDK**, a comprehensive Python-based
 
 ## Technology Stack
 
-- **Language**: Python 3.8+
+- **Language**: Python 3.10+
 - **Core Dependencies**: `numpy`, `scipy`, `matplotlib`, `plotly`, `networkx`, `pandas`, `requests`
-- **Linting & Formatting**: Configured via `ruff` in `pyproject.toml` (target version py38).
+- **Linting & Formatting**: Configured via `ruff` in `pyproject.toml` (target version py310).
 - **Type Checking**: Static typing with `mypy` is heavily used across the codebase.
 
 ## Development Guidelines for AI Agents

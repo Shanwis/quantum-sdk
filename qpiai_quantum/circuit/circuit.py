@@ -681,7 +681,7 @@ class Circuit:
 
         if device_name == "QpiAI-QSV-Local":
             from ..authentication.user import get_user
-        
+
             user = get_user()
             if user is None or not user.name or not user.email:
                 raise ValueError(

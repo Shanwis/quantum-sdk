@@ -39,7 +39,7 @@ def set_user(user_data: SDKUser | str) -> None:
         user = user_data
     else:
         raise APIKeyInvalidError()
-    
+
     _user_context.set(user)
     # Also store globally for Jupyter notebook persistence across cells
     _global_user = user

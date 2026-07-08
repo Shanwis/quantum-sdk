@@ -27,7 +27,7 @@ class QpiAIQuantumAuth:
             raise APIKeyInvalidError()
         if api_key == "":
             raise APIKeyEmptyError()
-        
+
         user_info = QpiAIQuantumAuth.me(api_key=api_key)
         user = SDKUser(
             name=user_info.get("name", ""),
