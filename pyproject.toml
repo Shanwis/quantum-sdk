@@ -1,0 +1,194 @@
+[project]
+name = "qpiai-quantum"
+version = "0.1.40"
+description = "A comprehensive Python-based quantum computing framework providing modular implementations of quantum algorithms and optimization solvers"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "QpiAI", email = "support@qcloud.qpiai.tech"}
+]
+maintainers = [
+    {name = "QpiAI", email = "support@qcloud.qpiai.tech"}
+]
+keywords = [
+    "quantum computing",
+    "sdk",
+    "cirq",
+    "algorithms",
+    "optimization",
+    "quantum algorithms"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "cvxpy",
+    "matplotlib",
+    "numpy",
+    "plotly",
+    "requests",
+    "scipy",
+    "requests-sse",
+    "python-dotenv",
+    "ipykernel",
+]
+
+[project.urls]
+Documentation = "https://docs.qcloud.qpiai.tech/"
+Repository = "https://github.com/qpiai/quantum-sdk"
+"Qcloud App" = "https://qcloud.qpiai.tech/"
+"Bug Tracker" = "https://github.com/qpiai/quantum-sdk/issues"
+
+[project.optional-dependencies]
+dev = [
+    "setuptools",
+    "wheel",
+    "build",
+    "pytest",
+    "pytest-cov",
+    "black",
+    "isort",
+    "flake8",
+    "mypy",
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "myst-parser",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = [
+    "tutorial_notebooks",
+    "quantum_sdk_tests",
+    "sdk_notebooks",
+    "tests",
+    "tests.*",
+    ".venv",
+    "venv",
+    "*.ipynb_checkpoints",
+    "__pycache__",
+    ".git",
+    ".pytest_cache",
+    "build",
+    "dist",
+    "**/*.joblib"
+]
+
+[tool.setuptools.package-data]
+"qpiai_quantum" = ["*.py", "*.yaml", "*.yml", "*.json", "*.cfg", "*.ini"]
+
+[tool.setuptools]
+include-package-data = true
+
+# Optional: Add CLI entry points if needed
+[project.scripts]
+# qpiai = "qpiai_quantum.cli:main"
+
+# Linting and formatting configurations
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "*.ipynb",
+    "quantum_sdk_tests",
+    "tutorials",
+    "tutorial_notebooks",
+    "sdk_notebooks",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.8+
+target-version = "py38"
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+select = ["E4", "E7", "E9", "F", "W"]
+ignore = [
+    "E501",  # Line too long (handled by formatter)
+    "F401",  # Unused imports (might be false positives)
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E402"]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+docstring-code-format = true
+
+# Set the line length limit used when formatting code snippets in
+# docstrings.
+docstring-code-line-length = "dynamic"
+
+[[tool.mypy.overrides]]
+module = [
+    "requests.*",
+    "scipy.*",
+]
+ignore_missing_imports = true

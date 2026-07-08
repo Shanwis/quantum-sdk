@@ -1,0 +1,9 @@
+cvxpy
+matplotlib
+numpy
+plotly
+requests
+scipy
+requests-sse
+python-dotenv
+ipykernel
