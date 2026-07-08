@@ -701,9 +701,9 @@ class Circuit:
                     bitstring[::-1]: count for bitstring, count in result.counts.items()
                 }
             return result
-        circuit_name = None
-        overwrite = True
-        timeout = 500
+        circuit_name = kwargs.pop("circuit_name", None)
+        overwrite = kwargs.pop("overwrite", True)
+        timeout = kwargs.pop("timeout", 500)
 
         method = _map_device_name_to_method(device_name)
 
