@@ -98,7 +98,10 @@ class PlotlyVisualizer:
             if op["operation_type"] == OperationType.N_QUBIT_NON_PARAMETRIC.value:
                 qubits = op["qubits"]
 
-                gate_name = op["gate_name"].replace("C", "")
+                if op["gate_name"].upper() in ["ID", "I"]:
+                    gate_name = "I"
+                else:
+                    gate_name = op["gate_name"].replace("C", "")
 
                 # Use the unified n_qubit_gate method
                 plotter.draw_n_qubit_gate(x_pos, qubits, gate_name)

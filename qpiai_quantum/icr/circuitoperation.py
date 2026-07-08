@@ -82,7 +82,7 @@ class XGate(CircuitOperation):
 
 class IDGate(CircuitOperation):
     def __init__(self, qubit: int):
-        super().__init__(OperationType.N_QUBIT_NON_PARAMETRIC, "I", [qubit])
+        super().__init__(OperationType.N_QUBIT_NON_PARAMETRIC, "ID", [qubit])
 
 
 class YGate(CircuitOperation):

@@ -20,6 +20,8 @@ class MatplotlibVisualizer:
             "CP": "P",
             "CCX": "X",
             "MCX": "X",
+            "id": "I",
+            "ID": "I",
         }
         return controlled_gate_labels.get(gate_name, gate_name)
 
