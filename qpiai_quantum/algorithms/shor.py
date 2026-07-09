@@ -9,12 +9,27 @@ from .qft import QFT
 
 
 class ShorsAlgorithm(QuantumAlgorithm):
+    """
+    Educational implementation of Shor's factoring algorithm.
+
+    This implementation demonstrates the structure of Shor's algorithm
+    (superposition → controlled modular exponentiation → inverse QFT →
+    measurement → classical post-processing) but uses a **simplified
+    modular exponentiation circuit** and a classical helper for
+    multiplicative-order finding.  It is suitable for learning and for
+    factoring small numbers (N ≤ 20) but is **not** a scalable,
+    production-grade implementation.
+
+    For cryptographic-scale factoring, a full modular exponentiation
+    circuit built from reversible arithmetic primitives is required.
+    """
+
     def __init__(self, N: int):
         """
         Initialize Shor's algorithm for factoring N.
 
         Args:
-            N (int): The number to factor
+            N (int): The number to factor (educational implementation, best for N ≤ 20)
         """
         # Calculate required number of qubits
         num_qubits = 2 * math.ceil(math.log2(N))

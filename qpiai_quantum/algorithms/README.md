@@ -43,7 +43,8 @@ print(f"Success probability: {prob:.2%}")
 ```
 
 ### 3. Shor's Factoring Algorithm
-Exponential speedup for integer factorization.
+Educational implementation demonstrating quantum period-finding for integer factorization.
+Best suited for small numbers (N ≤ 20); uses a simplified modular exponentiation circuit.
 
 ```python
 from qpiai_quantum.algorithms import ShorsAlgorithm
@@ -140,7 +141,9 @@ print(f"Theoretical phase: {theoretical}")
 ```
 
 ### 8. Quantum Random Number Generator (QRNG)
-Generate true random numbers via Hadamard sampling.
+Generate random numbers via Hadamard sampling.  Output is true quantum
+random when executed on QPU hardware; on the local simulator, sampling
+uses NumPy's pseudo-random number generator.
 
 ```python
 from qpiai_quantum.algorithms import QRNG
@@ -160,6 +163,39 @@ raw  = rng.generate(output_format="bytes")       # e.g. b'\xb3'
 values = rng.generate_batch(count=10)
 print(f"10 random values: {values}")
 ```
+
+### 9. Amplitude Estimation
+Quantum speedup for Monte Carlo estimation.  The SDK provides the **iterative
+(maximum-likelihood) variant**; the canonical QPE-based variant is planned but
+not yet implemented.
+
+```python
+from qpiai_quantum.algorithms.amplitude_estimation import (
+    IterativeAmplitudeEstimation,
+    EstimationProblem,
+)
+from qpiai_quantum.circuit import Circuit
+
+# Prepare a state whose amplitude we want to estimate
+A = Circuit(2)
+A.ry(0, 0.6)   # rotate qubit 0
+A.cx(0, 1)      # entangle
+
+# Define the estimation problem
+problem = EstimationProblem(
+    state_preparation=A,
+    objective_qubits=[1],
+)
+
+# Run iterative amplitude estimation
+iae = IterativeAmplitudeEstimation(epsilon_target=0.01, alpha=0.05)
+amplitude = iae.estimate(problem, shots=2000)
+print(f"Estimated amplitude: {amplitude:.4f}")
+```
+
+> **Note:** The canonical QPE-based `AmplitudeEstimation` class exists as a
+> stub and raises `NotImplementedError`.  Use `IterativeAmplitudeEstimation`
+> for all production work.
 
 ## Common Operations
 
@@ -287,10 +323,11 @@ for n in [2, 3, 4, 5]:
 - **Use Cases**: Database search, solving SAT problems, optimization
 - **Key Feature**: Quadratic speedup via amplitude amplification
 
-### Shor's Algorithm
+### Shor's Algorithm (Educational)
 - **Complexity**: Polynomial time vs exponential classical
 - **Use Cases**: Integer factorization, cryptanalysis
 - **Key Feature**: Combines period finding (quantum) with classical number theory
+- **Note**: This SDK provides an educational implementation with a simplified modular exponentiation circuit. It is suitable for learning and small N (≤ 20).
 
 ### Simon's Algorithm
 - **Complexity**: O(n) queries vs O(2^(n/2)) classical
@@ -315,7 +352,13 @@ for n in [2, 3, 4, 5]:
 ### QRNG (Quantum Random Number Generator)
 - **Complexity**: O(n) gates for n random bits
 - **Use Cases**: Cryptographic key generation, Monte Carlo sampling, gaming
-- **Key Feature**: Hardware-certified randomness from quantum measurement
+- **Key Feature**: Randomness from quantum measurement (true randomness on QPU hardware; pseudo-random on simulator)
+
+### Amplitude Estimation
+- **Complexity**: O(1/ε) queries vs O(1/ε²) classical Monte Carlo
+- **Use Cases**: Option pricing, risk analysis, counting problems
+- **Key Feature**: Quadratic speedup for estimating expectation values
+- **Note**: Only the iterative (maximum-likelihood) variant is currently implemented. The canonical QPE-based variant is planned.
 
 ## Performance Tips
 

@@ -1,10 +1,14 @@
 """
 Quantum Random Number Generator (QRNG)
 
-Generates true random numbers by exploiting quantum mechanical uncertainty.
+Generates random numbers by exploiting quantum mechanical uncertainty.
 Each qubit is placed in an equal superposition via a Hadamard gate, so
-measurement yields 0 or 1 with exactly 50 % probability — fundamentally
-unpredictable, unlike any pseudo-random source.
+measurement yields 0 or 1 with exactly 50 % probability.
+
+When executed on real quantum hardware (QPU), the output is fundamentally
+unpredictable — true quantum randomness.  On the local statevector
+simulator the sampling step uses NumPy's pseudo-random number generator,
+so the output is *not* genuinely random in the information-theoretic sense.
 
 """
 
@@ -19,7 +23,12 @@ class QRNG(QuantumAlgorithm):
     """
     Quantum Random Number Generator.
 
-    Uses Hadamard sampling to generate hardware-certified random numbers.
+    Uses Hadamard sampling to generate random numbers.
+
+    When executed on quantum hardware, produces hardware-certified true
+    random numbers.  On the local simulator, output is pseudo-random
+    (sampled via NumPy from the ideal probability distribution).
+
     Each call to ``generate()`` builds a circuit of ``n_bits`` qubits,
     applies H gates, measures, and converts the bitstring to the desired
     output format.
@@ -46,8 +55,9 @@ class QRNG(QuantumAlgorithm):
         super().__init__(num_qubits=n_bits, name="QRNG")
         self.n_bits = n_bits
         self.description = (
-            "Quantum Random Number Generator — generates true random "
-            "numbers via Hadamard sampling on a quantum backend"
+            "Quantum Random Number Generator — generates random numbers "
+            "via Hadamard sampling (true randomness on QPU hardware; "
+            "pseudo-random on local simulator)"
         )
 
     # ------------------------------------------------------------------ #

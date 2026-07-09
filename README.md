@@ -62,14 +62,14 @@ Python Program"]
 
 ### Quantum Algorithms
 - **Grover's Search**: Amplitude amplification for unstructured search
-- **Shor's Algorithm**: Integer factorization
+- **Shor's Algorithm**: Integer factorization (educational implementation for small N)
 - **Quantum Fourier Transform (QFT)**: Core subroutine for many quantum algorithms
 - **Quantum Phase Estimation (QPE)**: Eigenvalue estimation
 - **Simon's Algorithm**: Finding hidden bit strings
 - **Bernstein-Vazirani**: Determining hidden linear functions
 - **Deutsch-Jozsa**: Distinguishing constant from balanced functions
 - **Quantum Random Number Generator (QRNG)**: True quantum randomness
-- **Amplitude Estimation**: Quantum speedup for Monte Carlo estimation (standard and iterative variants)
+- **Amplitude Estimation**: Quantum speedup for Monte Carlo estimation (iterative variant; standard/QPE-based variant planned)
 
 
 ### Quantum Information & States
