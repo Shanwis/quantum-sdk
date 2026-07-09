@@ -8,7 +8,7 @@ class EvolutionNode:
         Create a new node for operation in the circuit evolution.
 
         Args:
-            operation (CiricitOperation): the operation to be performed on the circuit / gate application
+            operation (CircuitOperation): the operation to be performed on the circuit / gate application
             prev (EvolutionNode): the previous operation in the evolution.
             next (EvolutionNode): the next operation in the evolution.
 
@@ -18,16 +18,16 @@ class EvolutionNode:
         """
 
         if operation is None:
-            raise Exception("Cannot creation a evolution node without an operation")
+            raise Exception("Cannot create an evolution node without an operation")
 
         self.operation = operation
         self.prev = prev
         self.next = next
 
 
-class CirucitEvolutionList:
+class CircuitEvolutionList:
     """
-    Data Sructure to hold operate on the circuit evolution.
+    Data structure to hold and operate on the circuit evolution.
     """
 
     def __init__(self):
@@ -51,7 +51,7 @@ class CirucitEvolutionList:
 
     def append_to_tail(self, operation):
         """
-        append a operation to the end of the evolution linked list
+        append an operation to the end of the evolution linked list
         """
 
         if self.size == 0:
@@ -67,14 +67,14 @@ class CirucitEvolutionList:
         # node prev is tail
         node.prev = self.tail
 
-        # node will be tai;
+        # node will be tail
         self.tail = node
 
         self.size += 1
 
     def append_to_head(self, operation):
         """
-        append a operation to the start of the evolution linked list
+        append an operation to the start of the evolution linked list
         """
         if self.size == 0:
             self._create_head_with_operation(operation)
@@ -96,7 +96,7 @@ class CirucitEvolutionList:
 
     def append(self, operation):
         """
-        append a operation to the end of the evolution linked list (same as append_to_tail)
+        append an operation to the end of the evolution linked list (same as append_to_tail)
         """
         self.append_to_tail(operation)
         return

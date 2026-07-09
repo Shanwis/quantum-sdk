@@ -32,11 +32,11 @@ from .circuitoperation import (
     BarrierOperation,
     Operation,
 )
-from .icr import IntermediateCirucitRepresentation
+from .icr import IntermediateCircuitRepresentation
 
 __all__ = [
     "CircuitOperation",
-    "IntermediateCirucitRepresentation",
+    "IntermediateCircuitRepresentation",
     "CustomControlOperation",
     "HGate",
     "XGate",

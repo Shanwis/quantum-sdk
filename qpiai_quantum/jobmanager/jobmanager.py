@@ -11,7 +11,7 @@ import numpy as np  # type: ignore
 from ..authentication.user import get_user
 from ..circuit.circuit import Circuit
 from ..config import get_api_url, get_sse_url
-from ..icr.icr import IntermediateCirucitRepresentation
+from ..icr.icr import IntermediateCircuitRepresentation
 from .exceptions import (
     AuthenticationError,
     CircuitNotFoundError,
@@ -243,10 +243,10 @@ class JobManager:
 
     def _convert_circuit_to_qasm(self, circuit) -> str:
         """
-        Convert Circuit or IntermediateCirucitRepresentation object to OpenQASM string.
+        Convert Circuit or IntermediateCircuitRepresentation object to OpenQASM string.
 
         Args:
-            circuit: Circuit or IntermediateCirucitRepresentation object
+            circuit: Circuit or IntermediateCircuitRepresentation object
 
         Returns:
             str: OpenQASM string representation of the circuit
@@ -259,7 +259,7 @@ class JobManager:
             if isinstance(qasm_result, list):
                 return "\n".join(qasm_result)
             return qasm_result
-        elif isinstance(circuit, IntermediateCirucitRepresentation):
+        elif isinstance(circuit, IntermediateCircuitRepresentation):
             temp_circuit = Circuit()
             temp_circuit.icr = circuit
             qasm_result = temp_circuit.to_qasm()
@@ -268,7 +268,7 @@ class JobManager:
             return qasm_result
         else:
             raise JobManagerError(
-                f"Cannot convert circuit of type {type(circuit)}, expected a Circuit or IntermediateCirucitRepresentation object."
+                f"Cannot convert circuit of type {type(circuit)}, expected a Circuit or IntermediateCircuitRepresentation object."
             )
 
     def submit_qasm_job(
@@ -483,7 +483,7 @@ class JobManager:
 
     def submit_circuit_job(
         self,
-        circuit: Circuit | IntermediateCirucitRepresentation,
+        circuit: Circuit | IntermediateCircuitRepresentation,
         experiment_name: str = "Default Experiment",
         shots: int = 1024,
         method: str = "statevector",
@@ -495,13 +495,13 @@ class JobManager:
         overwrite: bool = False,
     ) -> Dict[str, Any]:
         """
-        Submit Circuit or IntermediateCirucitRepresentation for execution.
+        Submit Circuit or IntermediateCircuitRepresentation for execution.
 
         This method provides the same functionality as submit_qasm_job() but accepts
         Circuit or ICR objects directly, converting them to QASM automatically.
 
         Args:
-            circuit (Circuit | IntermediateCirucitRepresentation): Circuit or ICR object to execute
+            circuit (Circuit | IntermediateCircuitRepresentation): Circuit or ICR object to execute
             experiment_name (str): Name of experiment to associate with (default: "Default Experiment")
                                 Note: Experiment must exist - create experiment first
             shots (int): Number of shots to execute (default: 1024)
@@ -1408,7 +1408,7 @@ class JobManager:
 
     def submit_and_wait_for_results_qasm(
         self,
-        qasm_string_or_circuit: str | Circuit | IntermediateCirucitRepresentation,
+        qasm_string_or_circuit: str | Circuit | IntermediateCircuitRepresentation,
         experiment_name: str = "Default Experiment",
         shots: int = 1024,
         method: str = "statevector",
@@ -1428,7 +1428,7 @@ class JobManager:
         into a single convenient function call with SSE support for real-time status updates.
 
         Args:
-            qasm_string_or_circuit (str | Circuit | IntermediateCirucitRepresentation):
+            qasm_string_or_circuit (str | Circuit | IntermediateCircuitRepresentation):
                                     OpenQASM 2.0 circuit description OR Circuit/ICR object
             experiment_name (str): Name of experiment to associate with (default: "Default Experiment")
                                 Note: Experiment must exist - create experiment first

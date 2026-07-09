@@ -1,16 +1,16 @@
 from qpiai_quantum.circuit import QuantumRegister, ClassicalRegister
-from .circuitevolution import CirucitEvolutionList
+from .circuitevolution import CircuitEvolutionList
 from .circuitoperation import CircuitOperation
 
 
-class IntermediateCirucitRepresentation:
+class IntermediateCircuitRepresentation:
     """
     A representation of a quantum circuit for standardization of building and executing.
     """
 
     def __init__(self, *registers, name, metadata):
         """
-        creates an intermediate circuit representation of the circuit holding standard information about the circuit.
+        Creates an intermediate circuit representation of the circuit holding standard information about the circuit.
 
         Args:
             *registers: Registers in the circuit.
@@ -34,7 +34,7 @@ class IntermediateCirucitRepresentation:
             self.num_clbits += reg.size
 
         # create the Evolution List
-        self.evolve = CirucitEvolutionList()
+        self.evolve = CircuitEvolutionList()
 
     def _init_metadata(self):
         """

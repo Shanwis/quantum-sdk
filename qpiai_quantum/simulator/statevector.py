@@ -3,7 +3,7 @@ Statevector Simulator
 =====================
 A self-contained statevector simulator that executes QpiAI Quantum
 circuits locally using NumPy. It implements the BaseSimulator interface
-and directly consumes IntermediateCirucitRepresentation objects without
+and directly consumes IntermediateCircuitRepresentation objects without
 needing QASM compilation.
 """
 

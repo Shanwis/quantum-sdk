@@ -1,4 +1,4 @@
-from qpiai_quantum.icr.icr import IntermediateCirucitRepresentation as ICR
+from qpiai_quantum.icr.icr import IntermediateCircuitRepresentation as ICR
 from qpiai_quantum.circuit.circuit import Circuit
 from .plotter import Plotter
 from qpiai_quantum.icr.circuitoperation import OperationType

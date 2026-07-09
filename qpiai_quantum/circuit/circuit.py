@@ -2,7 +2,7 @@ import time
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ..icr.circuitoperation import CircuitOperation, OperationType
-from ..icr.icr import IntermediateCirucitRepresentation
+from ..icr.icr import IntermediateCircuitRepresentation
 from .classicalregister import ClassicalRegister
 from .exceptions import CircuitError
 from .quantumregister import QuantumRegister
@@ -44,7 +44,7 @@ def _map_device_name_to_method(device_name: str):
 class Circuit:
     def __init__(self, *regs: int | Register, name=None, metadata=None):
         """
-        A controller for the Intermediate Circuit Representation (ICR). This class is used to interact with the ICR at a high level and create quantum circuits. It is not recommended to directly interact iht the ICR, but rather use this class.
+        A controller for the Intermediate Circuit Representation (ICR). This class is used to interact with the ICR at a high level and create quantum circuits. It is not recommended to directly interact with the ICR, but rather use this class.
 
         Args:
             *regs (int | Register): The number of qubits or the registers to be added to the circuit. If the argument
@@ -62,13 +62,13 @@ class Circuit:
             name = f"Circuit_{int(time.time())}_{uuid.uuid4().hex[:8]}"
 
         self.name = name
-        self.icr: IntermediateCirucitRepresentation
+        self.icr: IntermediateCircuitRepresentation
 
         if len(regs) == 1 and isinstance(regs[0], int):
             num_qubits = regs[0]
             qregs = QuantumRegister(num_qubits, name="q")
             cregs = ClassicalRegister(num_qubits, name="c")
-            self.icr = IntermediateCirucitRepresentation(
+            self.icr = IntermediateCircuitRepresentation(
                 qregs, cregs, name=name, metadata=metadata
             )
 
@@ -77,12 +77,12 @@ class Circuit:
             num_clbits: int = regs[1]  # type: ignore
             qregs = QuantumRegister(num_qubits, name="q")
             cregs = ClassicalRegister(num_clbits, name="c")
-            self.icr = IntermediateCirucitRepresentation(
+            self.icr = IntermediateCircuitRepresentation(
                 qregs, cregs, name=name, metadata=metadata
             )
 
         elif all(isinstance(reg, Register) for reg in regs):
-            self.icr = IntermediateCirucitRepresentation(
+            self.icr = IntermediateCircuitRepresentation(
                 *regs, name=name, metadata=metadata
             )
 
@@ -283,7 +283,7 @@ class Circuit:
 
     def to_circuit_operation(self, name=None):
         """
-        Corvert the circuit to a Circuit Operation.
+        Convert the circuit to a Circuit Operation.
         """
 
         if name is None:
