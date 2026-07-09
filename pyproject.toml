@@ -1,6 +1,6 @@
 [project]
 name = "qpiai-quantum"
-version = "0.1.41"
+version = "0.1.42"
 description = "A comprehensive Python-based quantum computing framework providing modular implementations of quantum algorithms and optimization solvers"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -60,10 +60,11 @@ dev = [
     "build",
     "pytest",
     "pytest-cov",
-    "black",
-    "isort",
-    "flake8",
     "mypy",
+    "ruff",
+    "codespell",
+    "pip-audit",
+    "twine",
 ]
 docs = [
     "sphinx",
