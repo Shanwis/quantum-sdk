@@ -1,6 +1,6 @@
 from qpiai_quantum.authentication.user import get_user
 from qpiai_quantum.jobmanager.backend import Backend, ResolvedBackend
-from qpiai_quantum.config import get_server_url
+from qpiai_quantum.config import HTTP_TIMEOUT, get_server_url
 import requests
 
 
@@ -36,6 +36,7 @@ class QuantumAppAdapter:
         response = requests.get(
             f"{self.API_URL}/api/compute-resources/sdk/resolve/{backend.value}",
             headers=self.headers,
+            timeout=HTTP_TIMEOUT,
         )
         if response.status_code != 200:
             raise ValueError(f"Failed to resolve backend: {response.text}")

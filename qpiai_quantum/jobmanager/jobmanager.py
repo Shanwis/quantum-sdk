@@ -10,7 +10,7 @@ import numpy as np  # type: ignore
 
 from ..authentication.user import get_user
 from ..circuit.circuit import Circuit
-from ..config import get_api_url, get_sse_url
+from ..config import HTTP_TIMEOUT, get_api_url, get_sse_url
 from ..icr.icr import IntermediateCircuitRepresentation
 from .exceptions import (
     AuthenticationError,
@@ -113,7 +113,7 @@ class JobManager:
             # Fetch compute resources from API
             url = get_api_url("/api/compute-resources")
             headers = self._get_auth_header()
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
 
             if response.status_code == 200:
                 resources = response.json()
@@ -165,7 +165,7 @@ class JobManager:
         try:
             url = get_api_url("/api/compute-resources")
             headers = self._get_auth_header()
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
             response.raise_for_status()
 
             resources = response.json()
@@ -203,7 +203,7 @@ class JobManager:
         try:
             url = get_api_url(f"/api/experiments/by-name?name={experiment_name}")
             headers = self._get_auth_header()
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
 
             if response.status_code == 404:
                 raise ExperimentNotFoundError(experiment_name)
@@ -351,7 +351,7 @@ class JobManager:
             logger.debug(f"Creating circuit with payload: {circuit_payload}")
 
             circuit_response = requests.post(
-                circuit_url, json=circuit_payload, headers=headers
+                circuit_url, json=circuit_payload, headers=headers, timeout=HTTP_TIMEOUT
             )
 
             if circuit_response.status_code == 409:
@@ -370,7 +370,9 @@ class JobManager:
                     if experiment_id:
                         list_url += f"&experiment_id={experiment_id}"
 
-                    list_response = requests.get(list_url, headers=headers)
+                    list_response = requests.get(
+                        list_url, headers=headers, timeout=HTTP_TIMEOUT
+                    )
                     list_response.raise_for_status()
 
                     circuits_data = list_response.json()
@@ -399,7 +401,10 @@ class JobManager:
                             "need_density_matrix": need_density_matrix,
                         }
                         circuit_update_response = requests.put(
-                            update_url, json=update_payload, headers=headers
+                            update_url,
+                            json=update_payload,
+                            headers=headers,
+                            timeout=HTTP_TIMEOUT,
                         )
                         circuit_update_response.raise_for_status()
                     else:
@@ -425,7 +430,9 @@ class JobManager:
             if compute_resource_id is not None:
                 job_payload["compute_resource_id"] = compute_resource_id
 
-            job_response = requests.post(job_url, json=job_payload, headers=headers)
+            job_response = requests.post(
+                job_url, json=job_payload, headers=headers, timeout=HTTP_TIMEOUT
+            )
 
             # Enhanced error handling for 400 Bad Request
             if job_response.status_code == 400:
@@ -580,7 +587,9 @@ class JobManager:
 
             url = get_api_url(f"/api/jobs/{job_id}")
             headers = self._get_auth_header()
-            response = requests.get(url, headers=headers, stream=True)
+            response = requests.get(
+                url, headers=headers, stream=True, timeout=HTTP_TIMEOUT
+            )
             if response.status_code == 404:
                 logger.info(f"Job {job_id} not found")
                 return None
@@ -629,7 +638,7 @@ class JobManager:
             # Query for currently running jobs
             url = get_api_url("/api/jobs/user?status=running&page_size=1")
             headers = self._get_auth_header()
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
             response.raise_for_status()
 
             data = response.json()
@@ -729,7 +738,7 @@ class JobManager:
             url = get_api_url(f"/api/jobs/user?{query_string}")
 
             headers = self._get_auth_header()
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
             response.raise_for_status()
 
             data = response.json()
@@ -807,7 +816,7 @@ class JobManager:
             # Send cancellation request
             url = get_api_url(f"/api/jobs/{job_id}/cancel")
             headers = self._get_auth_header()
-            response = requests.post(url, headers=headers)
+            response = requests.post(url, headers=headers, timeout=HTTP_TIMEOUT)
 
             if response.status_code == 404:
                 raise JobManagerError(f"Job {job_id} not found")
@@ -887,7 +896,7 @@ class JobManager:
             # Send deletion request
             url = get_api_url(f"/api/jobs/{job_id}")
             headers = self._get_auth_header()
-            response = requests.delete(url, headers=headers)
+            response = requests.delete(url, headers=headers, timeout=HTTP_TIMEOUT)
 
             if response.status_code == 404:
                 raise JobManagerError(f"Job {job_id} not found")
@@ -997,7 +1006,7 @@ class JobManager:
             # Get job details (includes results if completed)
             url = get_api_url(f"/api/jobs/{job_id}")
             headers = self._get_auth_header()
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
             response.raise_for_status()
             job_data = response.json()
 
@@ -1142,6 +1151,7 @@ class JobManager:
                 download_url,
                 json={"s3_path": s3_path},
                 headers=headers,
+                timeout=HTTP_TIMEOUT,
             )
             response.raise_for_status()
             presigned_data = response.json()
@@ -1161,7 +1171,7 @@ class JobManager:
             )
 
         try:
-            file_response = requests.get(presigned_url)
+            file_response = requests.get(presigned_url, timeout=HTTP_TIMEOUT)
             file_response.raise_for_status()
         except requests.exceptions.RequestException as e:
             raise JobManagerError(

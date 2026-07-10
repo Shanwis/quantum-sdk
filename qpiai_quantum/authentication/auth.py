@@ -1,7 +1,7 @@
 from typing import Optional
 import os
 import requests
-from ..config import get_api_url
+from ..config import HTTP_TIMEOUT, get_api_url
 from .exceptions import (
     AuthError,
     APIKeyInvalidError,
@@ -74,7 +74,7 @@ class QpiAIQuantumAuth:
 
             headers = {"X-Secret-Token": current_api_key}
             url = get_api_url("/api/users/me")
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=HTTP_TIMEOUT)
 
             if response.status_code == 401:
                 raise APIKeyInvalidError("API key is invalid or expired")
