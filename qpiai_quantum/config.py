@@ -26,6 +26,9 @@ except ImportError:
 # Default server URL
 DEFAULT_SERVER_URL = "https://qcloud-server.qpiai.tech"
 
+# Bound both connection establishment and server response time for cloud requests.
+HTTP_TIMEOUT = (10, 120)
+
 
 def get_server_url() -> str:
     """
