@@ -149,8 +149,8 @@ class ShorsAlgorithm(QuantumAlgorithm):
 
         # Apply controlled modular exponentiation
         # U|y⟩ = |ay mod N⟩
-        # This is a simplified placeholder - full implementation requires
-        # efficient modular exponentiation circuits
+        # Educational simplified modular exponentiation. A scalable implementation
+        # requires reversible arithmetic primitives.
         self._controlled_modular_exp(a, precision_qubits, target_qubits)
 
         # Apply inverse QFT to precision register
