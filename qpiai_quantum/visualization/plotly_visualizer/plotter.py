@@ -376,7 +376,6 @@ class Plotter:
             )
 
             # Add qubit label
-            print(self.styleOptions["qubit_wires"]["label"])
             self.fig.add_annotation(
                 x=x_start - 0.5,
                 y=-actual_y,

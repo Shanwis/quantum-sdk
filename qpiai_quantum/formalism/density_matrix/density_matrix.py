@@ -1,5 +1,6 @@
 from typing import List, Union
 import numpy as np
+import warnings
 import scipy.linalg as splinalg
 import scipy.sparse as spsparce
 from cvxpy.expressions.expression import Expression
@@ -245,8 +246,11 @@ class DensityMatrix(BaseDensityMatrix):
                 # Check if numerical problems occurred due to a large alpha
                 if np.isinf(ent):
                     alpha = np.inf
-                    print(
-                        "Warning: Numerical problems encountered due to a large value of ALPHA. Computing the entropy with ALPHA = Inf instead."
+                    warnings.warn(
+                        "Numerical problems encountered due to a large value of ALPHA. "
+                        "Computing the entropy with ALPHA = Inf instead.",
+                        UserWarning,
+                        stacklevel=2,
                     )
             else:
                 ent = np.inf  # for cases where alpha = Inf

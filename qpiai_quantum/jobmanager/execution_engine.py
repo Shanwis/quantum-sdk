@@ -1,6 +1,9 @@
 import os
 import time
+import logging
 from typing import Optional, Dict, Any, TYPE_CHECKING
+
+logger = logging.getLogger("qpiai_quantum.jobmanager")
 
 if TYPE_CHECKING:
     from ..circuit.circuit import Circuit
@@ -56,7 +59,7 @@ class ExecutionEngine:
                     timeout=timeout,
                 )
             except Exception as e:
-                print(f"Error : {str(e)}")
+                logger.error(f"Error : {str(e)}")
                 raise
         return result
 
