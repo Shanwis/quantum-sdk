@@ -151,10 +151,12 @@ target-version = "py310"
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
-select = ["E4", "E7", "E9", "F", "W"]
+select = ["E4", "E7", "E9", "F", "W", "N"]
 ignore = [
     "E501",  # Line too long (handled by formatter)
     "F401",  # Unused imports (might be false positives)
+    "N817",  # CamelCase imported as acronym (e.g. ICR)
+    "N818",  # Exception name should end with Error suffix (e.g. VisualizerException)
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
@@ -166,6 +168,18 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E402"]
+"qpiai_quantum/utils/gate_matrices.py" = ["N805"]
+
+[tool.ruff.lint.pep8-naming]
+ignore-names = [
+    "U", "M", "Q", "R", "Z", "S", "X", "Y", "A", "B", "W", "H", "I", "N", "V", "G", "C",
+    "Lambda", "L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "A_inv",
+    "setUp", "setUpClass", "tearDown", "tearDownClass",
+    "check_MUB", "Bell", "UU", "S13", "SU", "SUSU", "non_MES",
+    "ADC", "oX", "X2", "P", "P_tr", "P_sum", "RZ", "RY",
+    "GRADIENT_FREE_OPTIMIZERS", "GRADIENT_BASED_OPTIMIZERS",
+    "eigenvalues_M"
+]
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

@@ -10,10 +10,10 @@ class Plotter:
     circuit visualizations.
     """
 
-    def __init__(self, maxDepth, numQubits, theme="light", scale=1):
+    def __init__(self, max_depth, num_qubits, theme="light", scale=1):
         self.theme = theme
-        self.maxDepth = maxDepth
-        self.numQubits = numQubits
+        self.max_depth = max_depth
+        self.num_qubits = num_qubits
         self.scale = scale
 
         # Fixed size parameters
@@ -29,8 +29,8 @@ class Plotter:
         # Fixed height parameters
         self.qubit_height = 1.0 * self.scale  # Height per qubit - fixed
         self.qubit_padding = 0.5 * self.scale  # Padding between qubits
-        self.row_height = self.numQubits * self.qubit_height + self.qubit_padding * (
-            self.numQubits - 1
+        self.row_height = self.num_qubits * self.qubit_height + self.qubit_padding * (
+            self.num_qubits - 1
         )
 
         # Margins for better layout
@@ -135,7 +135,7 @@ class Plotter:
                 zeroline=False,
                 showticklabels=False,
                 showline=False,
-                range=[0, self.maxDepth],
+                range=[0, self.max_depth],
             ),
             yaxis=dict(
                 showgrid=False,
@@ -144,7 +144,7 @@ class Plotter:
                 showline=False,
                 scaleanchor="x",
                 scaleratio=1,
-                range=[-(self.numQubits + 1), 1],
+                range=[-(self.num_qubits + 1), 1],
             ),
         )
 
@@ -292,7 +292,7 @@ class Plotter:
             self.draw_qubit_wires(
                 self.left_margin,
                 row_width - self.right_margin,
-                self.numQubits,
+                self.num_qubits,
                 y_offset,
             )
 
@@ -395,8 +395,8 @@ class Plotter:
         )
 
         # Position classical bit wire below the last qubit wire
-        # numQubits - 1 is the index of the last qubit
-        last_qubit_y = (self.numQubits - 1) * (
+        # num_qubits - 1 is the index of the last qubit
+        last_qubit_y = (self.num_qubits - 1) * (
             self.qubit_height + self.qubit_padding
         ) + y_offset
         y_bottom = -last_qubit_y - clbit_extra_spacing  # Position below the last qubit
@@ -723,7 +723,7 @@ class Plotter:
 
         # Calculate the actual position of the classical bit wire using the same logic as in draw_clbit_wires
         clbit_extra_spacing = 1.0
-        last_qubit_y = (self.numQubits - 1) * (
+        last_qubit_y = (self.num_qubits - 1) * (
             self.qubit_height + self.qubit_padding
         ) + y_offset
         actual_clbit_y = last_qubit_y + clbit_extra_spacing

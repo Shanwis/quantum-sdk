@@ -121,15 +121,15 @@ class DensityMatrix(BaseDensityMatrix):
         print(self.state)
 
     @staticmethod
-    def check(densityMatrix: "DensityMatrix", verbose: bool = False) -> bool:
+    def check(density_matrix: "DensityMatrix", verbose: bool = False) -> bool:
         """
         Validate if the given density matrix is valid
 
         Args:
-            densityMatrix (DensityMatrix): The density matrix to be validated
+            density_matrix (DensityMatrix): The density matrix to be validated
         """
 
-        state = densityMatrix.state
+        state = density_matrix.state
 
         trace_check = (np.trace(state) < 1.000001) and (np.trace(state) > 0.999999)
         positive_semi_definiteness = not (np.all(np.linalg.eigvals(state) >= 0.000001))
@@ -886,7 +886,7 @@ class DensityMatrix(BaseDensityMatrix):
         return result
 
     @staticmethod
-    def gate_expand_2toN(U, N, control=None, target=None, targets=None):
+    def gate_expand_2_to_n(U, N, control=None, target=None, targets=None):
         if targets is not None:
             control, target = targets
         if control is None or target is None:
@@ -937,7 +937,7 @@ class DensityMatrix(BaseDensityMatrix):
             N = 2
 
         if N is not None:
-            return DensityMatrix.gate_expand_2toN(swap_matrix, N, targets=targets)
+            return DensityMatrix.gate_expand_2_to_n(swap_matrix, N, targets=targets)
         else:
             return swap_matrix
 

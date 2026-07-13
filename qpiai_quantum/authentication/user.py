@@ -70,7 +70,7 @@ def clear_user() -> None:
 
 
 @contextlib.contextmanager
-def user_context(apiKey: str):
+def user_context(api_key: str):
     """
     Context manager to temporarily set the active user context for this thread/task.
     Ensures that the context is reset when done. Safe for multi-user, async, and notebook/server use.
@@ -81,7 +81,7 @@ def user_context(apiKey: str):
         # Context reset automatically
     """
     old_user = get_user()
-    set_user(apiKey)
+    set_user(api_key)
     try:
         yield
     finally:

@@ -135,7 +135,7 @@ class StatevectorSimulator(BaseSimulator):
             counts=counts,
             statevector=state.tolist(),
             shots=shots,
-            executionTime=elapsed_time,
+            execution_time=elapsed_time,
             method="statevector",
             job_status="completed",
             n_qubits=n_qubits,
