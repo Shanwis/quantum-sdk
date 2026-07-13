@@ -69,7 +69,7 @@ Python Program"]
 - **Bernstein-Vazirani**: Determining hidden linear functions
 - **Deutsch-Jozsa**: Distinguishing constant from balanced functions
 - **Quantum Random Number Generator (QRNG)**: True quantum randomness
-- **Amplitude Estimation**: Quantum speedup for Monte Carlo estimation (iterative variant; standard/QPE-based variant planned)
+- **Iterative Amplitude Estimation**: Maximum-likelihood amplitude estimation for Monte Carlo-style workflows (canonical QPE-based variant planned)
 
 
 ### Quantum Information & States
