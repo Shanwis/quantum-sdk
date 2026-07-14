@@ -58,7 +58,7 @@ Please refer to our [Feature Requests Guide](docs/FEATURE_REQUESTS.md) to learn 
 
 Have questions about using the SDK?
 
-- **GitHub Discussions**: [https://github.com/qpiai/quantum-sdk/issues](https://github.com/qpiai/quantum-sdk/issues)
+<!-- - **GitHub Discussions**: [https://github.com/qpiai/quantum-sdk/discussions](https://github.com/qpiai/quantum-sdk/discussions) -->
 - **Email**: support@qcloud.qpiai.tech
 - **Documentation**: [https://docs.qcloud.qpiai.tech/](https://docs.qcloud.qpiai.tech/)
 

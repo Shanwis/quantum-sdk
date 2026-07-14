@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional, Callable, Union, List, Tuple
 import numpy as np
+import warnings
 from dataclasses import dataclass
 from qpiai_quantum.results.base_result import BaseQuantumResult
 from ....circuit import Circuit
@@ -63,6 +64,7 @@ class VQESolver(QuantumAlgorithm):
         optimizer: Optimization method ('adam', 'gradient_descent', 'cobyla', 'spsa', etc.)
         max_iterations: Maximum number of optimization iterations (default: 100)
         initial_point: Initial parameters for optimization
+        verbose: Enable printing of optimization progress and completion summaries (default: True)
         name: Name of this VQE instance
 
     Note:
@@ -112,6 +114,7 @@ class VQESolver(QuantumAlgorithm):
         optimizer: str = "adam",
         max_iterations: int = 100,
         initial_point: Optional[np.ndarray] = None,
+        verbose: bool = True,
         name: str = "VQE",
     ):
         """Initialize VQE solver with algorithm parameters."""
@@ -121,10 +124,11 @@ class VQESolver(QuantumAlgorithm):
         self.max_iterations = max_iterations
         self.initial_point = initial_point
         self.hamiltonian = hamiltonian
+        self.verbose = verbose
         self._executor: Optional[JobManager] = None
         self.shots = 1024
         self.description = (
-            "Variational Quantum Eigensolver for finding ground state energies"
+            "Variational Quantum Eigensolver for finding ground state energies (verbose progress printing is enabled by default)"
         )
 
     def build_circuit(self, parameters: Optional[np.ndarray] = None) -> Circuit:
@@ -529,7 +533,8 @@ class VQESolver(QuantumAlgorithm):
 
         optimizer_name = self.optimizer.lower()
 
-        self._print_optimization_info(n_params, optimizer_name)
+        if self.verbose:
+            self._print_optimization_info(n_params, optimizer_name)
 
         if optimizer_name in GRADIENT_FREE_OPTIMIZERS:
             if optimizer_name == "cobyla":
@@ -744,6 +749,11 @@ class VQESolver(QuantumAlgorithm):
         self.shots = shots
         return self
 
+    def with_verbose(self, verbose: bool):
+        """Set verbose flag and return self for method chaining."""
+        self.verbose = verbose
+        return self
+
     def run(  # type: ignore[override]
         self,
         shots: int = 1024,
@@ -846,24 +856,25 @@ class VQESolver(QuantumAlgorithm):
         actual_nfev = opt_info.get("nfev", 0)
 
         # Print completion summary
-        print("\n" + "=" * 70)
-        print("VQE OPTIMIZATION COMPLETED")
-        print("=" * 70)
-        print(f"Actual Iterations:   {actual_iterations}")
-        print(f"Max Iterations:      {self.max_iterations}")
-        print(f"Circuit Evaluations: {actual_nfev}")
-        print(f"Final Energy:        {best_energy:.6f}")
-        print(f"Success:             {opt_info.get('success', False)}")
+        if self.verbose:
+            print("\n" + "=" * 70)
+            print("VQE OPTIMIZATION COMPLETED")
+            print("=" * 70)
+            print(f"Actual Iterations:   {actual_iterations}")
+            print(f"Max Iterations:      {self.max_iterations}")
+            print(f"Circuit Evaluations: {actual_nfev}")
+            print(f"Final Energy:        {best_energy:.6f}")
+            print(f"Success:             {opt_info.get('success', False)}")
 
-        # Check if iterations match expectations
-        if actual_iterations < self.max_iterations:
-            print(
-                f"\n Note: Optimizer converged early (stopped at iteration {actual_iterations})"
-            )
-        elif actual_iterations == self.max_iterations:
-            print("\n Note: Optimizer reached max_iterations limit")
+            # Check if iterations match expectations
+            if actual_iterations < self.max_iterations:
+                print(
+                    f"\n Note: Optimizer converged early (stopped at iteration {actual_iterations})"
+                )
+            elif actual_iterations == self.max_iterations:
+                print("\n Note: Optimizer reached max_iterations limit")
 
-        print("=" * 70 + "\n")
+            print("=" * 70 + "\n")
 
         # Get final measurement results
         final_circuit = self._build_circuit(ansatz, best_params)
@@ -888,8 +899,10 @@ class VQESolver(QuantumAlgorithm):
         else:
             # Fallback: generate default bitstring of all zeros
             best_bitstring = "0" * self.num_qubits
-            print(
-                f"\n⚠️  Warning: No measurement counts returned. Using default bitstring: {best_bitstring}"
+            warnings.warn(
+                f"No measurement counts returned. Using default bitstring: {best_bitstring}",
+                UserWarning,
+                stacklevel=2,
             )
 
         return VQEResult(

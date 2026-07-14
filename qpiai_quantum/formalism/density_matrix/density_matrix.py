@@ -1,11 +1,12 @@
 from typing import List, Union
 import numpy as np
+import warnings
 import scipy.linalg as splinalg
-import scipy.sparse as spsparce
+import scipy.sparse as spsparse
 from cvxpy.expressions.expression import Expression
 import cvxpy as cp
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection  # type: ignore[import-untyped]
 from .exceptions import DensityMatrixException
 from .base_density_matrix import BaseDensityMatrix
 
@@ -55,7 +56,7 @@ class DensityMatrix(BaseDensityMatrix):
         return int(np.log2(dim))
 
     @property
-    def state(self) -> np.array:
+    def state(self) -> np.ndarray:
         """
         Returns the density matrix
         """
@@ -63,7 +64,7 @@ class DensityMatrix(BaseDensityMatrix):
         return self._state
 
     @state.setter
-    def state(self, state: np.array):
+    def state(self, state: np.ndarray):
         """
         Sets the density matrix
 
@@ -89,16 +90,16 @@ class DensityMatrix(BaseDensityMatrix):
             state = self._convert_state_vector_to_dm(state)
 
         # assign the state as the density matrix
-        self._state: np.array = state
+        self._state: np.ndarray = state
 
-    def get_state(self) -> np.array:
+    def get_state(self) -> np.ndarray:
         """
         Returns the density matrix
         """
 
         return self.state
 
-    def _convert_state_vector_to_dm(self, state: np.array):
+    def _convert_state_vector_to_dm(self, state: np.ndarray):
         """
         Converts a given statevector into a density matrix
         """
@@ -114,21 +115,21 @@ class DensityMatrix(BaseDensityMatrix):
 
     def show(self):
         """
-        Prints the desity matrix into the console
+        Prints the density matrix into the console
         """
 
         print(self.state)
 
     @staticmethod
-    def check(densityMatrix: "DensityMatrix", verbose: bool = False) -> bool:
+    def check(density_matrix: "DensityMatrix", verbose: bool = False) -> bool:
         """
-        Validate if the given desity matrix is valid
+        Validate if the given density matrix is valid
 
         Args:
-            densityMatrix (DensityMatrix): The density matrix to be validated
+            density_matrix (DensityMatrix): The density matrix to be validated
         """
 
-        state = densityMatrix.state
+        state = density_matrix.state
 
         trace_check = (np.trace(state) < 1.000001) and (np.trace(state) > 0.999999)
         positive_semi_definiteness = not (np.all(np.linalg.eigvals(state) >= 0.000001))
@@ -245,8 +246,11 @@ class DensityMatrix(BaseDensityMatrix):
                 # Check if numerical problems occurred due to a large alpha
                 if np.isinf(ent):
                     alpha = np.inf
-                    print(
-                        "Warning: Numerical problems encountered due to a large value of ALPHA. Computing the entropy with ALPHA = Inf instead."
+                    warnings.warn(
+                        "Numerical problems encountered due to a large value of ALPHA. "
+                        "Computing the entropy with ALPHA = Inf instead.",
+                        UserWarning,
+                        stacklevel=2,
                     )
             else:
                 ent = np.inf  # for cases where alpha = Inf
@@ -258,19 +262,19 @@ class DensityMatrix(BaseDensityMatrix):
 
         return ent
 
-    def kraus(self, operator: List[np.array]):
+    def kraus(self, operator: List[np.ndarray]):
         """
         Applies a sequence of Kraus operators on the density matrix
         """
 
-        # works only on 2 quibt states
+        # works only on 2 qubit states
         if self.state.shape != (4, 4):
             raise DensityMatrixException("This method works only for 2 qubit states")
 
         state = self.state
         dim = int(state.shape[0])
         a = operator
-        ad = [index.getH() for index in a]
+        ad = [index.conj().T for index in a]
 
         d = a[0].shape[0]
         rho_flag = np.zeros((d, d), dtype=np.complex128)
@@ -292,7 +296,7 @@ class DensityMatrix(BaseDensityMatrix):
         """
 
         state = self.state
-        rho = Expression.cast_to_const(state)
+        rho = Expression.cast_to_const(state)  # type: ignore[arg-type]
 
         if rho.ndim < 2 or rho.shape[0] != rho.shape[1]:
             raise DensityMatrixException("Not a square matrix.")
@@ -305,16 +309,16 @@ class DensityMatrix(BaseDensityMatrix):
                 "Dimension of system doesn't correspond to dimension of subsystems."
             )
 
-        def term(rho: np.array, i: int, j: int, dims: List[int], axis=0):
+        def term(rho: np.ndarray, i: int, j: int, dims: List[int], axis=0):
             """ """
-            a = spsparce.coo_matrix(([1.0], ([0], [0])))
+            a = spsparse.coo_matrix(([1.0], ([0], [0])))
             for i_axis, dim in enumerate(dims):
                 if i_axis == axis:
-                    v = spsparce.coo_matrix(([1], ([i], [j])), shape=(dim, dim))
-                    a = spsparce.kron(a, v)
+                    v = spsparse.coo_matrix(([1], ([i], [j])), shape=(dim, dim))
+                    a = spsparse.kron(a, v)
                 else:
-                    eye_mat = spsparce.eye(dim)
-                    a = spsparce.kron(a, eye_mat)
+                    eye_mat = spsparse.eye(dim)
+                    a = spsparse.kron(a, eye_mat)
             return a @ rho @ a
 
         return DensityMatrix(
@@ -572,7 +576,7 @@ class DensityMatrix(BaseDensityMatrix):
         fid = np.real(0.5 * (1 + (n / 3)))
         return fid
 
-    def correlation_points(self, state: np.array):
+    def correlation_points(self, state: np.ndarray):
         """ """
 
         sx = np.array([[0, 1], [1, 0]])
@@ -839,7 +843,7 @@ class DensityMatrix(BaseDensityMatrix):
         return switcher.get(argument, "invalid argument choice")
 
     @staticmethod
-    def check_MUB(a: List[int], b: List[int]):
+    def check_MUB(a: List[np.ndarray], b: List[np.ndarray], verbose: bool = False) -> bool:
         dima = [len(item) for item in a]
         dimb = [len(item) for item in b]
 
@@ -857,10 +861,13 @@ class DensityMatrix(BaseDensityMatrix):
                                 - (1 / len(a))
                             )
 
-                    if np.count_nonzero(flag) == 0:
-                        print("Checking for MUB: passed for test all cases")
-                    else:
-                        print("Checking for MUB: some test cases failed")
+                    passed = np.count_nonzero(flag) == 0
+                    if verbose:
+                        if passed:
+                            print("Checking for MUB: passed for test all cases")
+                        else:
+                            print("Checking for MUB: some test cases failed")
+                    return passed
                 else:
                     raise ValueError("Dimensions of the two bases do not match!")
             else:
@@ -879,7 +886,7 @@ class DensityMatrix(BaseDensityMatrix):
         return result
 
     @staticmethod
-    def gate_expand_2toN(U, N, control=None, target=None, targets=None):
+    def gate_expand_2_to_n(U, N, control=None, target=None, targets=None):
         if targets is not None:
             control, target = targets
         if control is None or target is None:
@@ -930,12 +937,12 @@ class DensityMatrix(BaseDensityMatrix):
             N = 2
 
         if N is not None:
-            return DensityMatrix.gate_expand_2toN(swap_matrix, N, targets=targets)
+            return DensityMatrix.gate_expand_2_to_n(swap_matrix, N, targets=targets)
         else:
             return swap_matrix
 
     @staticmethod
-    def entangling_power_2q(U: np.array):
+    def entangling_power_2q(U: np.ndarray):
         if U.shape != (4, 4):
             raise Exception("U must be a two-qubit gate (4x4 matrix).")
 

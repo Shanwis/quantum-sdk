@@ -33,7 +33,7 @@ class QasmSimulatorResult(BaseQuantumResult):
         "message",
         "_probabilities",
         "density_matrix",
-        "executionTime",
+        "_execution_time",
         "cpu_usage",
         "memory_usage",
         "gpu_memory_usage",
@@ -55,7 +55,7 @@ class QasmSimulatorResult(BaseQuantumResult):
         probabilities: Optional[Dict[str, float]] = None,
         density_matrix=None,
         message: Optional[str] = "Job executed successfully",
-        executionTime: float = 0.0,
+        execution_time: float = 0.0,
         cpu_usage: float = 0.0,
         memory_usage: float = 0.0,
         gpu_memory_usage: float = 0.0,
@@ -74,7 +74,7 @@ class QasmSimulatorResult(BaseQuantumResult):
         self.message = message
         self._probabilities = probabilities
         self.density_matrix = density_matrix
-        self.executionTime = executionTime
+        self._execution_time = execution_time
         self.cpu_usage = cpu_usage
         self.memory_usage = memory_usage
         self.gpu_memory_usage = gpu_memory_usage
@@ -91,7 +91,7 @@ class QasmSimulatorResult(BaseQuantumResult):
 
     @property
     def execution_time(self) -> float:
-        return self.executionTime
+        return self._execution_time
 
     @property
     def statevector(self) -> Optional[List]:
@@ -168,7 +168,7 @@ class QasmSimulatorResult(BaseQuantumResult):
                 "message": self.message,
                 "probabilities": self.probabilities,
                 "density_matrix": self.density_matrix,
-                "executionTime": self.executionTime,
+                "execution_time": self._execution_time,
                 "cpu_usage": self.cpu_usage,
                 "memory_usage": self.memory_usage,
                 "gpu_memory_usage": self.gpu_memory_usage,
@@ -215,8 +215,8 @@ class QasmSimulatorResult(BaseQuantumResult):
         if self.shots and self.shots > 0:
             lines.append(f"  shots: {self.shots}")
 
-        if self.executionTime and self.executionTime > 0:
-            lines.append(f"  execution_time: {self.executionTime:.4f}s")
+        if self._execution_time and self._execution_time > 0:
+            lines.append(f"  execution_time: {self._execution_time:.4f}s")
 
         return "\n".join(lines)
 
@@ -248,8 +248,8 @@ class QasmSimulatorResult(BaseQuantumResult):
             data["probabilities"] = self.probabilities
         if self.shots and self.shots > 0:
             data["shots"] = self.shots
-        if self.executionTime and self.executionTime > 0:
-            data["executionTime"] = self.executionTime
+        if self._execution_time and self._execution_time > 0:
+            data["execution_time"] = self._execution_time
         if self.n_qubits is not None:
             data["n_qubits"] = self.n_qubits
         if self.n_cbits is not None:

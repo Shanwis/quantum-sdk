@@ -164,16 +164,16 @@ class Plotter:
 
     def __init__(
         self,
-        maxDepth,
-        numQubits,
+        max_depth,
+        num_qubits,
         break_point,
         num_broken_circuit,
         scale=1,
         use_mathtext: bool = True,
     ):
         self.theme = "light"
-        self.maxDepth = maxDepth
-        self.numQubits = numQubits
+        self.max_depth = max_depth
+        self.num_qubits = num_qubits
         self.scale = scale
         self.break_point = break_point
         self.num_broken_circuit = num_broken_circuit
@@ -265,7 +265,7 @@ class Plotter:
         # }
 
         self.fig_width = self.break_point + 1 * self.scale
-        self.fig_height = self.numQubits * self.num_broken_circuit * self.scale
+        self.fig_height = self.num_qubits * self.num_broken_circuit * self.scale
 
         self._initialize_figure()
 

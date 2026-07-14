@@ -2,6 +2,7 @@ import random
 
 
 class CircuitManager:
+    @staticmethod
     def generate_name() -> str:
         first_names = [
             "Floating",
@@ -31,6 +32,7 @@ class CircuitManager:
             f"{random.choice(first_names)}_{random.choice(last_names)}_{random_integer}"
         )
 
+    @staticmethod
     def save(name: str = None):
         if name is None:
             name = CircuitManager.generate_name()
@@ -40,3 +42,5 @@ class CircuitManager:
                 return func(*args, **kwargs)
 
             return wrapper
+
+        return decorator

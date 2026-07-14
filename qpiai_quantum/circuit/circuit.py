@@ -305,28 +305,28 @@ class Circuit:
             if gate.params:
                 params.extend(gate.params)
 
-        qubitMap = {}
+        qubit_map = {}
         qubits = list(set(qubits))
 
         for qubit in qubits:
-            qubitMap[f"qubit{qubit}"] = qubit
+            qubit_map[f"qubit{qubit}"] = qubit
 
-        paramMap = {}
+        param_map = {}
         params = list(set(params))
         for index in range(len(params)):
-            paramMap[f"param{index}"] = params[index]
+            param_map[f"param{index}"] = params[index]
 
-        # circOperationType = OperationType.N_QUBIT_PARAMETRIC if isParam else OperationType.N_QUBIT_NON_PARAMETRIC
-        circOperationType = OperationType.OPERATION
-        circOperation = CircuitOperation(
-            circOperationType, name, qubits=qubits, params=params
+        # circ_operation_type = OperationType.N_QUBIT_PARAMETRIC if isParam else OperationType.N_QUBIT_NON_PARAMETRIC
+        circ_operation_type = OperationType.OPERATION
+        circ_operation = CircuitOperation(
+            circ_operation_type, name, qubits=qubits, params=params
         )
-        circOperation.order = []  # type: ignore
+        circ_operation.order = []  # type: ignore
 
         for gate in gates:
-            circOperation.order.append(gate)  # type: ignore
+            circ_operation.order.append(gate)  # type: ignore
 
-        return circOperation
+        return circ_operation
 
     # Single-qubit non-parametric gates
     def h(self, qubit: int):

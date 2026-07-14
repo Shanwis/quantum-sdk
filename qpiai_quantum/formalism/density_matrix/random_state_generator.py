@@ -49,18 +49,18 @@ class RandomStateGenerator:
     def wishart(n: int, s: int, seed: float):
         np.random.seed(seed)
 
-        def RandomGinibre(d: int, s: int):
+        def random_ginibre(d: int, s: int):
             """Creates a random complex Ginibre matrix of size d x s"""
             X = (np.random.randn(d, s) + 1.0j * np.random.randn(d, s)) / np.sqrt(2)
             return X
 
-        def RandomWishart(d: int, s: int):
+        def random_wishart(d: int, s: int):
             """Creates a sample from the Wishart ensemble of parameters (d,s). The resulting matrix is PSD of size d x d"""
-            X = RandomGinibre(d, s)
+            X = random_ginibre(d, s)
             W = np.matmul(X, X.conj().transpose())
             return W
 
         d = 2**n
-        flag = RandomWishart(d, s)
+        flag = random_wishart(d, s)
         flag = np.array(flag / np.trace(flag))
         return flag

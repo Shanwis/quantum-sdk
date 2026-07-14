@@ -38,20 +38,20 @@ class JobManager:
     """
 
     @staticmethod
-    def track_job(func, jobName: str):
+    def track_job(func, job_name: str):
         """
         A decorator to track the job by its name.
 
         Args:
             func: Function to wrap
-            jobName (str): Name of the job for tracking
+            job_name (str): Name of the job for tracking
 
         Returns:
             Wrapped function that logs job tracking
         """
 
         def wrapper(*args, **kwargs):
-            print(f"Tracking job: {jobName}")
+            print(f"Tracking job: {job_name}")
             return func(*args, **kwargs)
 
         return wrapper
@@ -1065,7 +1065,7 @@ class JobManager:
                 statevector=statevector,
                 probabilities=results_data.get("probabilities"),
                 message="Job completed successfully",
-                executionTime=job_data.get("execution_time_ms", 0) / 1000.0
+                execution_time=job_data.get("execution_time_ms", 0) / 1000.0
                 if job_data.get("execution_time_ms")
                 else 0.0,
                 shots=sum(counts.values()) if counts else 0,
@@ -1407,7 +1407,7 @@ class JobManager:
             message=message,
             probabilities=probabilities,
             density_matrix=density_matrix,
-            executionTime=job_execution_time,
+            execution_time=job_execution_time,
             shots=total_shots,
             job_id=job_result.get("id"),
             job_status=job_result.get("status"),

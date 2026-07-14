@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional, Tuple, Union, Callable
 from qpiai_quantum.results.base_result import BaseQuantumResult
 import numpy as np
+import warnings
 from dataclasses import dataclass
 from ....circuit import Circuit
 from ....jobmanager import JobManager
@@ -67,6 +68,7 @@ class QAOASolver(QuantumAlgorithm):
         initial_params: Initial parameters for optimization (optional)
         ansatz: Ansatz type ('standard', 'hardware_efficient', or callable, default: 'standard')
         mixer: Mixer type ('x' or 'xy', default: 'x')
+        verbose: Enable printing of optimization progress and completion summaries (default: True)
         name: Name of this QAOA instance
     """
 
@@ -79,6 +81,7 @@ class QAOASolver(QuantumAlgorithm):
         initial_params: Optional[np.ndarray] = None,
         ansatz: Union[str, Callable] = "standard",
         mixer: str = "x",
+        verbose: bool = True,
         name: str = "QAOA",
     ):
         """Initialize QAOA solver with algorithm parameters."""
@@ -91,10 +94,11 @@ class QAOASolver(QuantumAlgorithm):
         self.ansatz = ansatz
         self.mixer = mixer
         self.problem = problem
+        self.verbose = verbose
         self._executor: Optional[JobManager] = None
         self.shots = 1024
         self.description = (
-            "Quantum Approximate Optimization Algorithm for combinatorial problems"
+            "Quantum Approximate Optimization Algorithm for combinatorial problems (verbose progress printing is enabled by default)"
         )
 
     def build_circuit(self, parameters: Optional[np.ndarray] = None) -> Circuit:
@@ -456,7 +460,8 @@ class QAOASolver(QuantumAlgorithm):
 
         optimizer_name = self.optimizer.upper()
 
-        self._print_optimization_info(n_params, optimizer_name)
+        if self.verbose:
+            self._print_optimization_info(n_params, optimizer_name)
 
         if optimizer_name in GRADIENT_FREE_OPTIMIZERS:
             if optimizer_name == "COBYLA":
@@ -625,6 +630,11 @@ class QAOASolver(QuantumAlgorithm):
         self.shots = shots
         return self
 
+    def with_verbose(self, verbose: bool):
+        """Set verbose flag and return self for method chaining."""
+        self.verbose = verbose
+        return self
+
     def with_backend_config(
         self, method: str = "statevector", device_name: str = "sim"
     ):
@@ -727,23 +737,24 @@ class QAOASolver(QuantumAlgorithm):
         actual_nfev = opt_info.get("nfev", 0)
 
         # Print completion summary
-        print("\n" + "=" * 70)
-        print("QAOA OPTIMIZATION COMPLETED")
-        print("=" * 70)
-        print(f"Actual Iterations:   {actual_iterations}")
-        print(f"Max Iterations:      {self.max_iterations}")
-        print(f"Circuit Evaluations: {actual_nfev}")
-        print(f"Final Energy:        {best_energy:.6f}")
-        print(f"Success:             {opt_info.get('success', False)}")
+        if self.verbose:
+            print("\n" + "=" * 70)
+            print("QAOA OPTIMIZATION COMPLETED")
+            print("=" * 70)
+            print(f"Actual Iterations:   {actual_iterations}")
+            print(f"Max Iterations:      {self.max_iterations}")
+            print(f"Circuit Evaluations: {actual_nfev}")
+            print(f"Final Energy:        {best_energy:.6f}")
+            print(f"Success:             {opt_info.get('success', False)}")
 
-        if actual_iterations < self.max_iterations:
-            print(
-                f"\n Note: Optimizer converged early (stopped at iteration {actual_iterations})"
-            )
-        elif actual_iterations == self.max_iterations:
-            print("\n Note: Optimizer reached max_iterations limit")
+            if actual_iterations < self.max_iterations:
+                print(
+                    f"\n Note: Optimizer converged early (stopped at iteration {actual_iterations})"
+                )
+            elif actual_iterations == self.max_iterations:
+                print("\n Note: Optimizer reached max_iterations limit")
 
-        print("=" * 70 + "\n")
+            print("=" * 70 + "\n")
 
         # Get final measurement results
         final_circuit = self._build_circuit(ansatz, best_params)
@@ -767,8 +778,10 @@ class QAOASolver(QuantumAlgorithm):
             best_bitstring = max(final_counts.items(), key=lambda x: x[1])[0]
         else:
             best_bitstring = "0" * self.num_qubits
-            print(
-                f"\n⚠️  Warning: No measurement counts returned. Using default bitstring: {best_bitstring}"
+            warnings.warn(
+                f"No measurement counts returned. Using default bitstring: {best_bitstring}",
+                UserWarning,
+                stacklevel=2,
             )
 
         # Decode solution using problem's decoder

@@ -364,13 +364,13 @@ class TestStaticMethods(unittest.TestCase):
         self.assertAlmostEqual(X[0, 1], 1.0)
         self.assertAlmostEqual(X[1, 0], 1.0)
 
-    def test_gate_expand_2toN(self):
+    def test_gate_expand_2_to_n(self):
         """Expanding a 2-qubit gate to N qubits should produce correct shape."""
         cnot = np.array(
             [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]],
             dtype=complex,
         )
-        expanded = DensityMatrix.gate_expand_2toN(cnot, 3, control=0, target=1)
+        expanded = DensityMatrix.gate_expand_2_to_n(cnot, 3, control=0, target=1)
         self.assertEqual(expanded.shape, (8, 8))
 
 
