@@ -45,8 +45,8 @@ class TestQFTInitializationAndCircuit(unittest.TestCase):
 
 
 @unittest.skipUnless(
-    os.environ.get("RUN_ALGO_CORRECTNESS") == "1",
-    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 to run.",
+    os.environ.get("RUN_ALGO_CORRECTNESS") == "1" and bool(os.getenv("API_KEY")),
+    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 and API_KEY in environment to run.",
 )
 class TestQFTCorrectness(unittest.TestCase):
     @classmethod

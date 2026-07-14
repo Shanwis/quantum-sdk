@@ -74,8 +74,8 @@ class TestDJExecutionWithMock(unittest.TestCase):
 
 
 @unittest.skipUnless(
-    os.environ.get("RUN_ALGO_CORRECTNESS") == "1",
-    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 to run.",
+    os.environ.get("RUN_ALGO_CORRECTNESS") == "1" and bool(os.getenv("API_KEY")),
+    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 and API_KEY in environment to run.",
 )
 class TestDJCorrectness(unittest.TestCase):
     @classmethod
@@ -95,6 +95,7 @@ class TestDJCorrectness(unittest.TestCase):
         # Test balanced oracle on 2 qubits
         dj_bal = DeutschJozsa(num_qubits=2, oracle_type="balanced")
         dj_bal.build_circuit()
+        assert dj_bal.circuit is not None
         dj_bal.circuit.name = f"dj_bal_{uuid.uuid4().hex[:8]}"
         res_bal = dj_bal.determine_function_type(shots=100)
         self.assertEqual(res_bal, "balanced")
@@ -102,6 +103,7 @@ class TestDJCorrectness(unittest.TestCase):
         # Test constant oracle on 2 qubits
         dj_const = DeutschJozsa(num_qubits=2, oracle_type="constant_one")
         dj_const.build_circuit()
+        assert dj_const.circuit is not None
         dj_const.circuit.name = f"dj_const_{uuid.uuid4().hex[:8]}"
         res_const = dj_const.determine_function_type(shots=100)
         self.assertEqual(res_const, "constant")

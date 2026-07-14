@@ -61,8 +61,8 @@ class TestBVExecutionWithMock(unittest.TestCase):
 
 
 @unittest.skipUnless(
-    os.environ.get("RUN_ALGO_CORRECTNESS") == "1",
-    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 to run.",
+    os.environ.get("RUN_ALGO_CORRECTNESS") == "1" and bool(os.getenv("API_KEY")),
+    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 and API_KEY in environment to run.",
 )
 class TestBVCorrectness(unittest.TestCase):
     @classmethod
@@ -82,6 +82,7 @@ class TestBVCorrectness(unittest.TestCase):
         # Simplest BV instance: 3 qubits, hidden string "101"
         bv = BernsteinVazirani(num_qubits=3, hidden_string="101")
         bv.build_circuit()
+        assert bv.circuit is not None
         bv.circuit.name = f"bv_{uuid.uuid4().hex[:8]}"
         res = bv.find_hidden_string(shots=100)
         self.assertEqual(res, "101")

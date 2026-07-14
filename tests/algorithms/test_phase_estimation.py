@@ -52,8 +52,8 @@ class TestQPEExecutionWithMock(unittest.TestCase):
 
 
 @unittest.skipUnless(
-    os.environ.get("RUN_ALGO_CORRECTNESS") == "1",
-    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 to run.",
+    os.environ.get("RUN_ALGO_CORRECTNESS") == "1" and bool(os.getenv("API_KEY")),
+    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 and API_KEY in environment to run.",
 )
 class TestQPECorrectness(unittest.TestCase):
     @classmethod
@@ -74,6 +74,7 @@ class TestQPECorrectness(unittest.TestCase):
         # e^(i * pi / 4) -> phase is 1/8 = 0.125
         qpe = QuantumPhaseEstimation(precision_qubits=3, eigenstate_qubits=1)
         qpe.build_circuit(unitary="T")
+        assert qpe.circuit is not None
         qpe.circuit.name = f"qpe_{uuid.uuid4().hex[:8]}"
 
         # Monkey patch build_circuit so estimate_phase doesn't recreate/overwrite named circuit

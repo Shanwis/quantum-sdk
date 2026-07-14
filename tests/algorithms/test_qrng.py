@@ -43,7 +43,7 @@ class TestQRNGInit(unittest.TestCase):
 
     def test_invalid_n_bits_type(self):
         with self.assertRaises(ValueError):
-            QRNG(n_bits=3.5)
+            QRNG(n_bits=3.5)  # type: ignore
 
 
 class TestBuildCircuit(unittest.TestCase):
@@ -86,6 +86,7 @@ class TestConvertOutput(unittest.TestCase):
         """n_bits=10 should produce 2 bytes."""
         rng = QRNG(n_bits=10)
         result = rng._convert_output("0000000001", "bytes")
+        assert isinstance(result, bytes)
         self.assertEqual(len(result), 2)
         self.assertEqual(result, (1).to_bytes(2, "big"))
 
@@ -174,8 +175,8 @@ class TestInfoAndRepr(unittest.TestCase):
 
 
 @unittest.skipUnless(
-    os.environ.get("RUN_ALGO_CORRECTNESS") == "1",
-    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 to run.",
+    os.environ.get("RUN_ALGO_CORRECTNESS") == "1" and bool(os.getenv("API_KEY")),
+    "Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 and API_KEY in environment to run.",
 )
 class TestQRNGCorrectness(unittest.TestCase):
     @classmethod
@@ -195,8 +196,10 @@ class TestQRNGCorrectness(unittest.TestCase):
         # Simplest instance: 2-bit random number generation
         rng = QRNG(n_bits=2)
         rng.build_circuit()
+        assert rng.circuit is not None
         rng.circuit.name = f"qrng_{uuid.uuid4().hex[:8]}"
         val = rng.generate(shots=1, output_format="int")
+        assert isinstance(val, int)
         self.assertTrue(0 <= val <= 3)
 
 

@@ -68,8 +68,8 @@ def test_canonical_qae_not_implemented():
 
 
 @pytest.mark.skipif(
-    os.environ.get("RUN_ALGO_CORRECTNESS") != "1",
-    reason="Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 to run.",
+    os.environ.get("RUN_ALGO_CORRECTNESS") != "1" or not os.getenv("API_KEY"),
+    reason="Skipping correctness test. Set RUN_ALGO_CORRECTNESS=1 and API_KEY in environment to run.",
 )
 def test_amplitude_estimation_correctness():
     import uuid
