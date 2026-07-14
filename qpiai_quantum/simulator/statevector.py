@@ -38,6 +38,7 @@ class StatevectorSimulator(BaseSimulator):
         shots: int = 1024,
         seed: Optional[int] = None,
         name: Optional[str] = None,
+        initial_state: Optional[np.ndarray] = None,
     ) -> QasmSimulatorResult:
         """
         Execute the given circuit locally using statevector simulation.
@@ -47,6 +48,7 @@ class StatevectorSimulator(BaseSimulator):
             shots: Number of measurement shots to perform.
             seed: Optional RNG seed for reproducibility.
             name: Optional name for the result object.
+            initial_state: Optional initial statevector for the simulation.
 
         Returns:
             A QasmSimulatorResult object containing counts and statevector.
@@ -59,10 +61,19 @@ class StatevectorSimulator(BaseSimulator):
         if n_qubits == 0:
             raise ValueError("Cannot simulate a circuit with 0 qubits.")
 
-        # Initialize state to |0...0>
         dim = 2**n_qubits
-        state = np.zeros(dim, dtype=complex)
-        state[0] = 1.0
+        if initial_state is not None:
+            if len(initial_state) != dim:
+                raise ValueError(
+                    f"Initial state dimension {len(initial_state)} does not match circuit qubit dimension {dim}."
+                )
+            if not np.isclose(np.linalg.norm(initial_state), 1.0):
+                raise ValueError("Initial state vector must be normalized (norm must be 1.0).")
+            state = np.array(initial_state, dtype=complex)
+        else:
+            # Initialize state to |0...0>
+            state = np.zeros(dim, dtype=complex)
+            state[0] = 1.0
 
         measure_map: dict[int, int] = {}
 

@@ -316,7 +316,11 @@ class Statevector:
             New evolved Statevector
         """
         if isinstance(other, Circuit):
-            raise NotImplementedError("Circuit evolution not yet implemented")
+            from qpiai_quantum.simulator.statevector import StatevectorSimulator
+
+            simulator = StatevectorSimulator()
+            result = simulator.run(other, initial_state=self.data)
+            return Statevector(result.statevector)
         else:
             # Assume it's a unitary matrix
             new_data = other @ self.data
